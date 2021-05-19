@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--configuration用来配置数据库的相关信息-->
+<configuration>
+    <!--配置连接数据库的相关信息-->
+    <!--environments用来配置数据库的环境，可以配置多个-->
+    <!--default指定默认使用的数据库环境-->
+    <environments default="mysql">
+        <!--配置mysql数据库环境-->
+        <environment id="mysql">
+            <!--配置事务管理器管理事务-->
+            <!--type指定事务管理器的类型-->
+            <transactionManager type="JDBC"/>
+            <!--dataSource指定数据源，就是连接数据库的信息-->
+            <!--type指定数据源类型，这里只盯类型为连接池-POOLED-->
+            <!--数据库连接池：是只实现准备好n个连接，要使用的时候从里面拿一个，用完再放回去，用来提高数据库性能-->
+            <dataSource type="POOLED">
+                <!--driverl指定数据库驱动-->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <!--url指定url-->
+                <property name="url" value="jdbc:mysql://localhost:3306/mysql"/>
+                <!--username指定用户名-->
+                <property name="username" value="root"/>
+                <!--指定密码-->
+                <property name="password" value=""/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+      <mapper resource="UserMapper.xml"/>
+    </mappers>
+</configuration>

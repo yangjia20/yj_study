@@ -1,0 +1,199 @@
+﻿
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>管理员中心</title>
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="css/main.css" />
+<script type="text/javascript" src="js/libs/modernizr.min.js"></script>
+<script type="text/javascript" src="js/libs/jquery-3.5.1.js"></script>
+<script type="text/javascript">
+	function showPic(e, sUrl) {
+		var imgurl='images/book_img/';
+		sUrl=imgurl+sUrl;
+		var x, y;
+		x = e.clientX;
+		y = e.clientY;
+		document.getElementById("Layer1").style.left = x + 2 + 'px';
+		document.getElementById("Layer1").style.top = y + 2 + 'px';
+		document.getElementById("Layer1").innerHTML = "<img border='0' src=\"" + sUrl + "\">";
+		document.getElementById("Layer1").style.display = "";
+	}
+	function hiddenPic() {
+		document.getElementById("Layer1").innerHTML = "";
+		document.getElementById("Layer1").style.display = "none";
+	}
+	function deletes() {
+		if($('input:checkbox:checked').length!=0){
+			if(confirm("是否批量删除")){
+				let url="deletes?";
+				$('input:checkbox:checked').each(function () {
+					let val = $(this).val();
+					url=url+"ids="+val+"&";
+				});
+				url=url.substring(0,url.lastIndexOf("&"));
+				location.href=url;
+			}
+		}else{
+			alert("你没有选中要删除的选择框");
+		}
+
+
+	}
+</script>
+</head>
+<body>
+	<div class="topbar-wrap white">
+		<!--<div class="topbar-inner clearfix">-->
+		<div class="topbar-logo-wrap clearfix">
+			<h1 class="topbar-logo none">
+				<a href="index.html" class="navbar-brand">管理员中心</a>
+			</h1>
+		</div>
+	</div>
+	</div>
+	<div class="container clearfix">
+		<div class="sidebar-wrap">
+			<div class="sidebar-title">
+				<h1>菜单</h1>
+			</div>
+			<div class="sidebar-content">
+				<ul class="sidebar-list">
+					<li><a href="#"><i class="icon-font">&#xe003;</i>图书管理</a>
+						<ul class="sub-menu">
+							<li><a href="qureyLikeAll"><i class="icon-font">&#xe008;</i>图书列表</a></li>
+							<li><a href="qureyAlltype"><i class="icon-font">&#xe005;</i>添加图书</a></li>
+						</ul></li>
+					<li><a href="#"><i class="icon-font">&#xe018;</i>系统管理</a>
+						<ul class="sub-menu">
+							<li><a href="#"><i class="icon-font">&#xe017;</i>系统设置</a></li>
+							<li><a href="#"><i class="icon-font">&#xe037;</i>清理缓存</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+		<!--/sidebar-->
+		<div class="main-wrap">
+
+			<div class="crumb-wrap">
+				<div class="crumb-list">
+					<i class="icon-font"></i><a href="#" color="#white">图书列表</a><span
+						class="crumb-step"></span><span class="crumb-name"></span>
+				</div>
+			</div>
+			<div class="search-wrap">
+				<div class="search-content">
+					<form action="qureyLikeAll" method="post">
+						<table class="search-tab">
+							<tr>
+								<th width="120">选择分类:</th>
+								<td><select name="searchsort" id="">
+										<option value="0">全部</option>
+										<option th:each="booktype:${bookTypes}" th:value="${booktype.btid}" th:text="${booktype.btname}" th:selected="${booktype.btid+''==type.get('searchsort')+''}">运动健身</option>
+										<option value="20" th:remove="all">旅游</option>
+										<option value="21" th:remove="all">文学艺术</option>
+										<option value="22" th:remove="all">演讲</option>
+										<option value="23" th:remove="all">经济</option>
+										<option value="24" th:remove="all">电影</option>
+										<option value="25" th:remove="all">科技</option>
+										<option value="26" th:remove="all">美食</option>
+								</select></td>
+								<th width="70">书名:</th>
+								<td><input class="common-text" placeholder="关键字" th:value="${type.get('bookname')}"
+									id="" name="bookname" type="text" /></td>
+								<td><input class="btn btn-primary btn2" value="查询"
+									type="submit" /></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			</div>
+			<div class="result-wrap">
+				<form name="myform" id="myform" method="post">
+					<div class="result-title">
+						<div class="result-list">
+							<a id="batchDel" href="javascript:deletes()"><i
+								class="icon-font"></i>批量删除</a>
+						</div>
+					</div>
+					<div class="result-content">
+					<!-- 用于显示悬浮的图片 -->
+					<div id="Layer1" style="display: none; position: absolute; z-index: 30;"></div>
+					<!-- <a href="" ></a> -->
+						<table class="result-tab" width="100%">
+							<tr>
+								<th class="tc" width="5%"></th>
+								<th>序号</th>
+								<th>图书名称</th>
+								<th>图书价格</th>
+								<th>图书类型</th>
+								<th>出版时间</th>
+								<th>审核状态</th>
+								<th>操作</th>
+							</tr>
+							<tr th:each="books:${bookInfos}" th:name="${books.bid}">
+								<td class="tc"><input name="ids" th:value="${books.bid}" type="checkbox"></td>
+								<td th:text="${books.bid}">1</td>
+								<td th:text="${books.bname}" onmouseout="hiddenPic();" th:onmousemove="showPic(event,[[${books.imgurl}]])">中国传统人生智慧1</td>
+								<td th:text="${books.price}">￥100</td>
+								<td th:text="${books.booktype.btname}">经济</td>
+								<td th:text="${#dates.format(books.dtime,'yyyy-MM-dd HH:mm:ss')}">2014-03-15 21:11:01</td>
+								<td th:if="${books.state==1}">已审核</td><td th:if="${books.state==0}"><span style="color: red;">未审核</span></td>
+								<td ><a th:href="@{deleteByid(ids=${books.bid})}">[删除]</a> <a href="#">[修改]</a></td>
+							</tr>
+							<tr th:remove="all">
+								<td class="tc"><input name="id[]" value="" type="checkbox"></td>
+								<td>2</td>
+								<td onmouseout="hiddenPic();" onmousemove="showPic(event,'images/book_img/9787302140160.jpg');">中国传统人生智慧3</td>
+								<td>￥100</td>
+								<td>经济</td>
+								<td>2014-03-15 21:11:01</td>
+								<td><span style="color: red;">未审核</span></td>
+								<td><a href="#">[删除]</a> <a href="#">[修改]</a> <a href="#">[审核]</a>
+								</td>
+							</tr>
+							<tr th:remove="all">
+								<td class="tc"><input name="id[]" value="" type="checkbox"></td>
+								<td>3</td>
+								<td onmouseout="hiddenPic();" onmousemove="showPic(event,'images/book_img/9787115134165.jpg');">中国传统人生智慧4</td>
+								<td>￥100</td>
+								<td>经济</td>
+								<td>2014-03-15 21:11:01</td>
+								<td>已审核</td>
+								<td><a href="#">[删除]</a> <a href="#">[修改]</a></td>
+							</tr>
+							<tr th:remove="all">
+								<td class="tc"><input name="id[]" value="" type="checkbox"></td>
+								<td>4</td>
+								<td  onmouseout="hiddenPic();" onmousemove="showPic(event,'images/book_img/9787115155108.jpg');">中国传统人生智慧5</td>
+								<td>￥100</td>
+								<td>经济</td>
+								<td>2014-03-15 21:11:01</td>
+								<td>已审核</td>
+								<td><a href="#">[删除]</a> <a href="#">[修改]</a></td>
+							</tr>
+							<tr th:remove="all">
+								<td class="tc"><input name="id[]" value="" type="checkbox"></td>
+								<td>5</td>
+								<td  onmouseout="hiddenPic();" onmousemove="showPic(event,'images/book_img/9787302131007.jpg');">中国传统人生智慧3</td>
+								<td>￥100</td>
+								<td>经济</td>
+								<td>2014-03-15 21:11:01</td>
+								<td><span style="color: red;">未审核</span></td>
+								<td><a href="#">[删除]</a> <a href="#">[修改]</a> <a href="#">[审核]</a>
+								</td>
+							</tr>
+						</table>
+						<div class="list-page">
+							<a href="#">首页</a> <a href="#">上一页</a> <a href="#">下一页</a> <a
+								href="#">尾页</a> 每页5条记录&nbsp;&nbsp;1/5
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!--/main-->
+	</div>
+</body>
+</html>
