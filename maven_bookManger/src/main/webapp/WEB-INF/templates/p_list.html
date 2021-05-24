@@ -186,8 +186,8 @@
 							</tr>
 						</table>
 						<div class="list-page">
-							<a href="#">首页</a> <a href="#">上一页</a> <a href="#">下一页</a> <a
-								href="#">尾页</a> 每页5条记录&nbsp;&nbsp;1/5
+							<a th:href="@{qureyLikeAll(page=1)}" th:if="${pageNum!=1}">首页</a> <a th:href="@{qureyLikeAll(page=${pageNum}-1)}" th:if="${pageNum!=1}">上一页</a> <a th:href="@{qureyLikeAll(page=${pageNum}+1)}" th:if="${pageNum!=pages1}">下一页</a>
+							<a th:href="@{qureyLikeAll(page=${pages1})}" th:if="${pageNum!=pages1}">尾页</a> 每页<a href="#" th:text="${pageSize}"></a> 条记录&nbsp;&nbsp;<a href="#" th:text="${pageNum}"></a> /<a href="#" th:text="${pages1}"></a>
 						</div>
 					</div>
 				</form>

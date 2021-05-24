@@ -4,6 +4,8 @@ import com.ck.entity.BookInfo;
 import com.ck.entity.BookType;
 import com.ck.service.BookInfoService;
 import com.ck.service.BookTypeService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,12 +34,29 @@ public class BookInfoController {
     Logger logger = Logger.getLogger(BookInfoController.class);
 
     @RequestMapping("qureyLikeAll")
-    public String qureyLikeAll(@RequestParam(required = true) HashMap map, ModelMap maps){
-        List<BookInfo> bookInfos = bookInfoService.qureyLike(map);
+    public String qureyLikeAll(@RequestParam(required = true) HashMap map, ModelMap maps,Integer page){
+      /*  List<BookInfo> bookInfos = bookInfoService.qureyLike(map);*/
+        int ppage=0;
+        if(page==null){
+             ppage=1;
+        }else{
+            ppage=page;
+        }
         List<BookType> bookTypes = bookTypeService.qureyAllType();
+        Page<BookInfo> pages = PageHelper.startPage(ppage,4);
+        bookInfoService.qureyLike(map);
+        List<BookInfo> bookInfos = pages.getResult();  //拿到返回查返回值
+        int pageNum = pages.getPageNum(); //当前页数
+        int pages1 = pages.getPages(); //总页数
+        int pageSize = pages.getPageSize(); //每页显示条数
+
         maps.put("bookInfos", bookInfos);
         maps.put("bookTypes",bookTypes);
         maps.put("type",map);
+        maps.put("pageNum",pageNum);
+        maps.put("pages1",pages1);
+        maps.put("pageSize",pageSize);
+
         return "p_list";
     }
 
